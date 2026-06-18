@@ -1,1 +1,123 @@
-/test.txt
+# =========================
+# Project test / temp files
+# =========================
+test.txt
+
+# =========================
+# ROS2 / colcon build outputs
+# =========================
+build/
+install/
+log/
+
+# =========================
+# ROS2 bag / recording files
+# 큰 파일이 되기 쉬우므로 기본 무시
+# =========================
+rosbag2_*/
+*.bag
+*.db3
+*.mcap
+
+# =========================
+# Python cache
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Python virtual environments
+# =========================
+.venv/
+venv/
+env/
+ENV/
+
+# =========================
+# VS Code local workspace/cache
+# =========================
+.vscode/
+**/.vscode/
+*.vc.db
+*.vc.db-shm
+*.vc.db-wal
+browse.vc.db
+browse.vc.db-shm
+browse.vc.db-wal
+
+# =========================
+# JetBrains IDE
+# =========================
+.idea/
+
+# =========================
+# C/C++ build artifacts
+# =========================
+*.o
+*.a
+*.so
+*.dll
+*.dylib
+*.exe
+
+# =========================
+# CMake
+# =========================
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Editor temporary files
+# =========================
+*.swp
+*.swo
+*~
+
+
+# ROS2 / colcon build outputs
+build/
+install/
+log/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python package metadata
+*.egg-info/
+.eggs/
+dist/
+
+# Test / coverage cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# VS Code cache
+.vscode/*.db
+.vscode/*.db-shm
+.vscode/*.db-wal
+.vscode/browse.vc.db*
+.vscode/ipch/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
