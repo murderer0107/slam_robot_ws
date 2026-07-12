@@ -1,0 +1,1626 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SmartFarmDashboard</class>
+ <widget class="QMainWindow" name="SmartFarmDashboard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1459</width>
+    <height>1060</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>촉각 기반 스마트팜 식재 자동화 시스템</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QMainWindow { background-color: #f5f7f9; }
+    QLabel#lbl_title { font-size: 34px; font-weight: 800; color: #111827; }
+    QGroupBox { background-color: #ffffff; border: 1px solid #d9e1e8; border-radius: 14px; margin-top: 26px; font-size: 16px; font-weight: 700; color: #116b25; }
+    QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; left: 18px; padding: 0px 8px; }
+    QLabel { font-size: 14px; color: #1f2937; }
+    QLabel[value=&quot;true&quot;] { font-size: 15px; font-weight: 700; color: #0b6b20; }
+    QPushButton { background-color: #ffffff; border: 1px solid #cfd8df; border-radius: 10px; font-size: 15px; font-weight: 700; padding: 8px; }
+    QPushButton:hover { background-color: #f0f8f2; border: 1px solid #159447; }
+    QPushButton#btn_start { background-color: #eaf8ed; color: #0b7a25; border: 1px solid #6fbe7b; }
+    QPushButton#btn_stop { background-color: #fff7e6; color: #b36b00; border: 1px solid #f2c15f; }
+    QPushButton#btn_shutdown { background-color: #eef2f7; color: #374151; border: 1px solid #bfc8d2; }
+    QPushButton#btn_estop { background-color: #fff0f0; color: #d60000; border: 1px solid #ff9b9b; }
+    QPushButton#btn_recovery { background-color: #eef8ff; color: #075985; border: 1px solid #7dd3fc; }
+    QPushButton#btn_home, QPushButton#btn_tray_check, QPushButton#btn_tray1_move, QPushButton#btn_tray2_move, QPushButton#btn_tray3_move, QPushButton#btn_tray4_move { color: #0b6b20; }
+    QPushButton#btn_press_pickup, QPushButton#btn_press_putdown, QPushButton#btn_shovel_pickup, QPushButton#btn_shovel_putdown { font-size: 13px; font-weight: 700; color: #1f2937; }
+    QPushButton#btn_refill, QPushButton#btn_remove_soil, QPushButton#btn_remove_obstacle, QPushButton#btn_plant { color: #6b3b10; }
+    QComboBox { background-color: #ffffff; border: 1px solid #cfd8df; border-radius: 8px; padding: 6px; font-size: 14px; }
+    QSlider::groove:horizontal { height: 8px; background: #e5e7eb; border-radius: 4px; }
+    QSlider::handle:horizontal { background: #159447; width: 16px; height: 16px; margin: -5px 0; border-radius: 8px; }
+    QTextEdit { background-color: #ffffff; border: 1px solid #d9e1e8; border-radius: 10px; font-family: Consolas, monospace; font-size: 14px; }
+    QTableWidget { background-color: #ffffff; border: 1px solid #e0e6ec; border-radius: 8px; gridline-color: #e5e7eb; font-size: 13px; }
+    QHeaderView::section { background-color: #eef8f0; color: #116b25; font-weight: 700; border: 1px solid #d9e1e8; padding: 4px; }
+   </string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="lbl_icon">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>30</y>
+      <width>121</width>
+      <height>42</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-size:38px;</string>
+    </property>
+    <property name="text">
+     <string>🤖🌱</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_title">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>30</y>
+      <width>591</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>촉각 기반 스마트팜 식재 자동화 시스템</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QFrame" name="top_status_frame">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>30</y>
+      <width>601</width>
+      <height>58</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QFrame { background:#ffffff; border:1px solid #cfd8df; border-radius:12px; }</string>
+    </property>
+    <widget class="QLabel" name="lbl_system_state_title">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>120</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:15px; color:#169b31; font-weight:700; border:none;</string>
+     </property>
+     <property name="text">
+      <string>● 상태:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_robot_status">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>10</y>
+       <width>101</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:15px; color:#0b6b20; font-weight:800; border:none;</string>
+     </property>
+     <property name="text">
+      <string>대기 중</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QFrame" name="line_header">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>10</y>
+       <width>1</width>
+       <height>34</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background:#cfd8df;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_ros_title">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>10</y>
+       <width>90</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:15px; color:#169b31; font-weight:700; border:none;</string>
+     </property>
+     <property name="text">
+      <string>● ROS 연결:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_ros_status">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>10</y>
+       <width>150</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:15px; color:#0b6b20; font-weight:800; border:none;</string>
+     </property>
+     <property name="text">
+      <string>Connected</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="group_robot_operation">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>100</y>
+      <width>430</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>1  시스템 제어</string>
+    </property>
+    <widget class="QPushButton" name="btn_start">
+     <property name="geometry">
+      <rect>
+       <x>14</x>
+       <y>50</y>
+       <width>95</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>시작</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_shutdown">
+     <property name="geometry">
+      <rect>
+       <x>117</x>
+       <y>50</y>
+       <width>95</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>종료</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_recovery">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>50</y>
+       <width>95</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>안전복구</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_home">
+     <property name="geometry">
+      <rect>
+       <x>323</x>
+       <y>50</y>
+       <width>95</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>HOME</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_press_pickup">
+     <property name="geometry">
+      <rect>
+       <x>14</x>
+       <y>145</y>
+       <width>95</width>
+       <height>58</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>누름판 집기</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_press_putdown">
+     <property name="geometry">
+      <rect>
+       <x>117</x>
+       <y>145</y>
+       <width>95</width>
+       <height>58</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>누름판 놓기</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_shovel_pickup">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>145</y>
+       <width>95</width>
+       <height>58</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>삽 집기</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_shovel_putdown">
+     <property name="geometry">
+      <rect>
+       <x>323</x>
+       <y>145</y>
+       <width>95</width>
+       <height>58</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>삽 놓기</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="group_tray_status">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>100</y>
+      <width>910</width>
+      <height>641</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>3  트레이 상태 / 작업 실행</string>
+    </property>
+    <widget class="QFrame" name="frame_tray1">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>55</y>
+       <width>420</width>
+       <height>260</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string>QFrame{background:#f5fff7; border:1px solid #84c993; border-radius:12px;}</string>
+     </property>
+     <widget class="QLabel" name="lbl_tray1_title">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>18</y>
+        <width>420</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:18px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>Tray 1</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray1_reset">
+      <property name="geometry">
+       <rect>
+        <x>332</x>
+        <y>16</y>
+        <width>72</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+    background-color: white;
+    color:red;
+}</string>
+      </property>
+      <property name="text">
+       <string>리셋</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray1_state_title">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>78</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-weight:700;</string>
+      </property>
+      <property name="text">
+       <string>토양 상태</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray1_state">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>78</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:15px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>대기</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="value" stdset="0">
+       <string>true</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray1_next_title">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>122</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-weight:700;</string>
+      </property>
+      <property name="text">
+       <string>다음 작업</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray1_next_action">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>122</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:15px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>대기</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="value" stdset="0">
+       <string>true</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray1_check">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>190</y>
+        <width>115</width>
+        <height>48</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>토양 측정</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray1_next">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>190</y>
+        <width>115</width>
+        <height>48</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>다음 작업</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame_tray2">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>55</y>
+       <width>420</width>
+       <height>260</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string>QFrame{background:#f5fff7; border:1px solid #84c993; border-radius:12px;}</string>
+     </property>
+     <widget class="QLabel" name="lbl_tray2_title">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>18</y>
+        <width>420</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:18px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>Tray 2</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray2_reset">
+      <property name="geometry">
+       <rect>
+        <x>332</x>
+        <y>16</y>
+        <width>72</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+    background-color: white;
+    color:red;
+}</string>
+      </property>
+      <property name="text">
+       <string>리셋</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray2_state_title">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>78</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-weight:700;</string>
+      </property>
+      <property name="text">
+       <string>토양 상태</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray2_state">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>78</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:15px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>대기</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="value" stdset="0">
+       <string>true</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray2_next_title">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>122</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-weight:700;</string>
+      </property>
+      <property name="text">
+       <string>다음 작업</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray2_next_action">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>122</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:15px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>대기</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="value" stdset="0">
+       <string>true</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray2_check">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>190</y>
+        <width>115</width>
+        <height>48</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>토양 측정</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray2_next">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>190</y>
+        <width>115</width>
+        <height>48</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>다음 작업</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame_tray3">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>335</y>
+       <width>420</width>
+       <height>260</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string>QFrame{background:#f5fff7; border:1px solid #84c993; border-radius:12px;}</string>
+     </property>
+     <widget class="QLabel" name="lbl_tray3_title">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>18</y>
+        <width>420</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:18px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>Tray 3</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray3_reset">
+      <property name="geometry">
+       <rect>
+        <x>332</x>
+        <y>16</y>
+        <width>72</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+    background-color: white;
+    color:red;
+}</string>
+      </property>
+      <property name="text">
+       <string>리셋</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray3_state_title">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>78</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-weight:700;</string>
+      </property>
+      <property name="text">
+       <string>토양 상태</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray3_state">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>78</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:15px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>대기</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="value" stdset="0">
+       <string>true</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray3_next_title">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>122</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-weight:700;</string>
+      </property>
+      <property name="text">
+       <string>다음 작업</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray3_next_action">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>122</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:15px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>대기</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="value" stdset="0">
+       <string>true</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray3_check">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>180</y>
+        <width>115</width>
+        <height>48</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>토양 측정</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray3_next">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>180</y>
+        <width>115</width>
+        <height>48</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>다음 작업</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame_tray4">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>335</y>
+       <width>420</width>
+       <height>260</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string>QFrame{background:#f5fff7; border:1px solid #84c993; border-radius:12px;}</string>
+     </property>
+     <widget class="QLabel" name="lbl_tray4_title">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>18</y>
+        <width>420</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:18px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>Tray 4</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray4_reset">
+      <property name="geometry">
+       <rect>
+        <x>332</x>
+        <y>16</y>
+        <width>72</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+    background-color: white;
+    color:red;
+}</string>
+      </property>
+      <property name="text">
+       <string>리셋</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray4_state_title">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>78</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-weight:700;</string>
+      </property>
+      <property name="text">
+       <string>토양 상태</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray4_state">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>78</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:15px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>대기</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="value" stdset="0">
+       <string>true</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray4_next_title">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>122</y>
+        <width>120</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-weight:700;</string>
+      </property>
+      <property name="text">
+       <string>다음 작업</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_tray4_next_action">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>122</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string>border:none; font-size:15px; font-weight:800; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>대기</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="value" stdset="0">
+       <string>true</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray4_check">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>180</y>
+        <width>115</width>
+        <height>48</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>토양 측정</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_tray4_next">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>180</y>
+        <width>115</width>
+        <height>48</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>다음 작업</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="group_robot_command">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>340</y>
+      <width>421</width>
+      <height>411</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>2  수동 제어</string>
+    </property>
+    <widget class="QFrame" name="frame_joint_control">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>230</y>
+       <width>371</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QFrame{background:#fbfdff; border:1px solid #d9e1e8; border-radius:12px;}</string>
+     </property>
+     <widget class="QLabel" name="lbl_joint_control_title">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>371</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:14px; font-weight:800; color:#116b25; border:none;</string>
+      </property>
+      <property name="text">
+       <string>Joint 각도 제어</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_j1">
+      <property name="geometry">
+       <rect>
+        <x>16</x>
+        <y>46</y>
+        <width>24</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>J1</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_j1">
+      <property name="geometry">
+       <rect>
+        <x>44</x>
+        <y>42</y>
+        <width>70</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_j2">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>46</y>
+        <width>24</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>J2</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_j2">
+      <property name="geometry">
+       <rect>
+        <x>158</x>
+        <y>42</y>
+        <width>70</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_j3">
+      <property name="geometry">
+       <rect>
+        <x>244</x>
+        <y>46</y>
+        <width>24</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>J3</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_j3">
+      <property name="geometry">
+       <rect>
+        <x>272</x>
+        <y>42</y>
+        <width>70</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_j4">
+      <property name="geometry">
+       <rect>
+        <x>16</x>
+        <y>84</y>
+        <width>24</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>J4</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_j4">
+      <property name="geometry">
+       <rect>
+        <x>44</x>
+        <y>80</y>
+        <width>70</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_j5">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>84</y>
+        <width>24</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>J5</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_j5">
+      <property name="geometry">
+       <rect>
+        <x>158</x>
+        <y>80</y>
+        <width>70</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_j6">
+      <property name="geometry">
+       <rect>
+        <x>244</x>
+        <y>84</y>
+        <width>24</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>J6</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_j6">
+      <property name="geometry">
+       <rect>
+        <x>272</x>
+        <y>80</y>
+        <width>70</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_move_joint">
+      <property name="geometry">
+       <rect>
+        <x>74</x>
+        <y>120</y>
+        <width>105</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#eaf8ed; color:#0b7a25; border:1px solid #6fbe7b; border-radius:9px; font-size:13px; font-weight:800;</string>
+      </property>
+      <property name="text">
+       <string>Joint 이동</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_read_joint">
+      <property name="geometry">
+       <rect>
+        <x>192</x>
+        <y>120</y>
+        <width>105</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#ffffff; border:1px solid #cfd8df; border-radius:9px; font-size:13px; font-weight:700; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>현재 Joint</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame_base_control">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>371</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QFrame{background:#fbfdff; border:1px solid #d9e1e8; border-radius:12px;}</string>
+     </property>
+     <widget class="QLabel" name="lbl_base_control_title">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>371</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:14px; font-weight:800; color:#116b25; border:none;</string>
+      </property>
+      <property name="text">
+       <string>Base 좌표 제어</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_x">
+      <property name="geometry">
+       <rect>
+        <x>16</x>
+        <y>46</y>
+        <width>32</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>X</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_x">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>42</y>
+        <width>76</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> mm</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-999.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_y">
+      <property name="geometry">
+       <rect>
+        <x>136</x>
+        <y>46</y>
+        <width>32</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>Y</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_y">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>42</y>
+        <width>76</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> mm</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-999.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_z">
+      <property name="geometry">
+       <rect>
+        <x>256</x>
+        <y>46</y>
+        <width>32</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>Z</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_z">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>42</y>
+        <width>76</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> mm</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-999.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_rx">
+      <property name="geometry">
+       <rect>
+        <x>16</x>
+        <y>84</y>
+        <width>32</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>RX</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_rx">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>80</y>
+        <width>76</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_ry">
+      <property name="geometry">
+       <rect>
+        <x>136</x>
+        <y>84</y>
+        <width>32</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>RY</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_ry">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>80</y>
+        <width>76</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbl_rz">
+      <property name="geometry">
+       <rect>
+        <x>256</x>
+        <y>84</y>
+        <width>32</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:13px; color:#1f2937; border:none;</string>
+      </property>
+      <property name="text">
+       <string>RZ</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spin_rz">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>80</y>
+        <width>76</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string> °</string>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>-180.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>180.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_move_base">
+      <property name="geometry">
+       <rect>
+        <x>74</x>
+        <y>120</y>
+        <width>105</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#eaf8ed; color:#0b7a25; border:1px solid #6fbe7b; border-radius:9px; font-size:13px; font-weight:800;</string>
+      </property>
+      <property name="text">
+       <string>Base 이동</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_read_base">
+      <property name="geometry">
+       <rect>
+        <x>192</x>
+        <y>120</y>
+        <width>105</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:#ffffff; border:1px solid #cfd8df; border-radius:9px; font-size:13px; font-weight:700; color:#0b6b20;</string>
+      </property>
+      <property name="text">
+       <string>현재 TCP</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="group_log">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>760</y>
+      <width>1360</width>
+      <height>250</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>5  로봇 작업 로그</string>
+    </property>
+    <widget class="QTextEdit" name="txt_log">
+     <property name="geometry">
+      <rect>
+       <x>24</x>
+       <y>42</y>
+       <width>1310</width>
+       <height>175</height>
+      </rect>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Consolas','monospace'; font-size:14px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;[14:02:31] ROS 연결 완료&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;[14:02:40] Tray 1 이동&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;[14:03:40] 흙 보충 필요&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1459</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
