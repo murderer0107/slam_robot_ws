@@ -1,112 +1,249 @@
 # robot_tests
 
-Doosan M0609 기반 테스트용 ROS 2 Python 패키지입니다.  
-현재는 누름판 핸들링, 모종 pick/place, 트레이 흙 상태 점검, 수동 조그/홈 복귀 테스트 코드를 정리해 둔 상태입니다.
+Doosan M0609 협동로봇 기반 스마트팜 식재 자동화 ROS 2 Python 패키지입니다.
 
-현재 `ws_cobot_pjt` 워크스페이스 전체 기준으로도 실작업 중심은 `ws_cobot1/src/robot_tests` 입니다.  
-루트의 `smartfarm_main.py`, `smartfarm_lib.py` 는 아직 스켈레톤 성격이 강하고, 실제 장비 기준 테스트 코드는 이 패키지 쪽에 모여 있습니다.
+이 저장소는 `robot_tests` 패키지를 루트에 둔 형태로 정리되어 있으며, PyQt Dashboard에서 토양 상태 측정, 상태별 보정 작업, 평탄화, 식물 심기, 수동 제어, 긴급정지/복구 흐름을 통합 실행합니다.
 
-통합 대시보드/시나리오 관련 구조 및 작업 기록은 `robot_tests/integrated/README.md`, `robot_tests/integrated/WORKLOG.md` 를 기준으로 관리합니다.
+## 주요 기능
 
-## 진행 상황
+- PyQt 기반 통합 Dashboard 실행
+- ROS 연결 상태 확인
+- Tray A/B/C/D별 토양 상태 측정
+- 토양 상태 판정: `미측정`, `정상`, `흙부족`, `흙많음`, `장애물감지`, `측정실패`
+- 상태별 다음 작업 실행
+  - 정상: 식물 심기
+  - 흙부족: 흙추가
+  - 흙많음: 흙제거
+  - 장애물감지: 돌제거
+  - 보정 완료: 평탄화 후 재측정
+- 누름판/삽 pickup 및 putdown
+- Base/Joint 수동 제어
+- 작업 로그 표시
+- 긴급정지 및 HOME 복귀 흐름
 
-- `doosan_api` 계열 중복 파일 제거
-- 좌표, 조인트, Tool/TCP, 그리퍼 출력 패턴, 판정 기준값을 `robot_motion_data.py`로 통합
-- 공통 이동/그리퍼 동작을 `motion_primitives.py`로 분리
-- 노드 공통 설정과 API import 보조를 `node_common.py`로 분리
-- 모종 pick/place 메인 시퀀스를 `plant_pick_and_place_common.py`로 공통화
-- 트레이 선택형 모종 이식 노드만 유지
-- 각 트레이 기본 상단 조인트 이동 노드 추가
-- 누름판 pickup/putdown 시 그리퍼 벌림 단계 조정
-- 개별 `a/b/c/d_tray_soil_drop_test_node` 제거 후 통합 `abcd_tray_soil_drop_test_node` 추가
+## 실행 환경
 
-## 주요 파일
+- ROS 2
+- Doosan Robotics ROS 2 패키지
+- Python ROS 2 package
+- PyQt5
+- Doosan M0609 로봇 및 DSR API 사용 환경
 
-- `robot_tests/robot_motion_data.py`
-  - 좌표, 조인트값, Tool/TCP 이름, 그리퍼 출력 패턴, soil 기준값 관리
-- `robot_tests/motion_primitives.py`
-  - `move_j`, `move_l`, `go_home`, 그리퍼 명령 등 공통 동작
-- `robot_tests/node_common.py`
-  - `ROBOT_ID`, `ROBOT_MODEL`, Doosan API import/setup 보조
-- `robot_tests/plant_pick_and_place_common.py`
-  - 모종 집기/이식 공통 시퀀스
-- `robot_tests/compliance_common.py`
-  - compliance 보조 함수
-- `robot_tests/dsr_runtime.py`
-  - overlay/source 상태와 무관하게 `DR_init`, `DSR_ROBOT2` import를 돕는 bootstrap
+현재 Dashboard 내부 기본 workspace setup 경로:
 
-## 노드 목록
+```text
+/home/rokey/ws_cobot_pjt/ws_cobot1/install/setup.bash
+```
 
-- `go_home_test`
-  - 현재 위치에서 안전하게 상승 후 홈 복귀
-- `keyboard_teleop_node`
-  - 키보드 기반 수동 이동, 현재 좌표 확인, 그리퍼 제어
-- `press_plate_pickup_node`
-  - 홈 -> 경유점 -> 누름판 상부 -> 하강 -> 집기 -> 복귀
-  - 하강 직전 `중간 벌리기(1000)` 적용
-- `press_plate_putdown_node`
-  - 홈 -> 경유점 -> 누름판 설치 위치 상부 -> 하강 -> 놓기 -> 복귀
-  - 내려놓은 뒤 `중간 벌리기(1000)` 상태로 상승
-- `plant_pick_and_place_tray_select_node`
-  - 트레이와 식물 번호를 입력받아 모종 이식 실행
-- `abcd_tray_soil_drop_test_node`
-  - 트레이를 입력받아 shovel scoop 후 tray별 조인트 드롭 테스트 실행
-  - 종료 시 그리퍼 상태 유지한 채 홈 복귀
-- `tray_top_move_node`
-  - 선택한 `A/B/C/D` 트레이의 기본 상단 조인트(`top`)로만 이동
-- `tray_soil_state_check_node`
-  - 트레이 흙 상태 측정 및 low/ok/high 판정
-  - 평균값과 차이가 큰 코너는 돌맹이 의심으로 분류
-- `tray_soil_add_node`
-  - soil check 결과가 `SOIL_LOW` 일 때 shovel로 흙 보충 시도
-- `tray_soil_keep_node`
-  - soil check 결과가 `SOIL_OK` 일 때 no-op 확인
-- `tray_soil_remove_node`
-  - soil check 결과가 `SOIL_HIGH` 일 때 shovel로 흙 제거 시도
-- `tray_rock_remove_node`
-  - soil check 결과의 돌맹이 의심 위치로 이동해 집기 시도
-- `simple_compliance_down_up_test`
-  - 현재 TCP 기준 순응제어 하강/상승 단독 테스트
+환경이 다르면 `robot_tests/integrated/config.py`의 `WORKSPACE_SETUP_PATH`를 실제 설치 경로에 맞게 수정해야 합니다.
 
-## 현재 데이터 정리 상태
+## 빠른 실행
 
-### 그리퍼 출력 패턴
+ROS 2 workspace 환경을 source 한 뒤 launch 파일을 실행합니다.
 
-- `0100` = `GRIPPER_HOME_PREPARE`
-  - 넓게 벌리기 / 홈 준비
-- `1000` = `PLANT_GRIPPER_WAYPOINT1_PREPARE`
-  - 중간 벌리기
-- `0010` = `GRIPPER_PICK_CLOSE`
-  - 강하게 잡기
+```bash
+source /home/rokey/ws_cobot_pjt/ws_cobot1/install/setup.bash
+ros2 launch robot_tests integrated_dashboard.launch.py
+```
 
-### 모종 이식 조인트
+실행되는 메인 노드:
 
-- `TRAY_ENTRY_JOINTS`
-  - 소스 트레이 진입 조인트
-- `TRAY_PLANT_JOINTS`
-  - 식물별 `pre_pick`, `pick`, `lift`
-- `TARGET_TRAY_PLACE_JOINTS`
-  - 대상 트레이별 `top`, `down`
+```text
+integrated_dashboard
+```
 
-### 트레이 상부 기준
+## 설치 / 빌드 예시
 
-- `TARGET_TRAY_PLACE_JOINTS[tray]["top"]`
-  - 각 트레이 기본 상단 조인트
-- `TRAY_TOPS_XY`
-  - soil check용 트레이 상부 XY 기준점
-- `TRAY_CORNERS_XYZ`
-  - tray soil check용 코너별 측정 좌표
+이 패키지를 ROS 2 workspace의 `src` 아래에 둔 뒤 빌드합니다.
 
-### 흙 상태 판정 기준
+```bash
+cd /home/rokey/ws_cobot_pjt/ws_cobot1
+colcon build --packages-select robot_tests
+source install/setup.bash
+```
 
-- `55.0 ~ 65.0`
-  - `SOIL_LOW`
-- `66.0 ~ 74.0`
-  - `SOIL_OK`
-- `75.0 ~ 87.0`
-  - `SOIL_HIGH`
-- 측정 코너 z가 전체 평균과 `10.0` 이상 차이
-  - `OBSTACLE_CANDIDATE` 로 처리
+## 프로젝트 구조
+
+```text
+robot_tests/
+├─ launch/
+│  └─ integrated_dashboard.launch.py
+├─ resource/
+│  └─ robot_tests
+├─ robot_tests/
+│  ├─ integrated/
+│  │  ├─ main.py
+│  │  ├─ dashboard_app.py
+│  │  ├─ dashboard_logic.py
+│  │  ├─ ros_runner.py
+│  │  ├─ config.py
+│  │  └─ smartfarm_dashboard.ui
+│  ├─ integrated_tray_soil_state_check_node.py
+│  ├─ integrated_tray_next_step_node.py
+│  ├─ integrated_tray_soil_flatten_node.py
+│  ├─ integrated_plant_pick_and_place_node.py
+│  ├─ integrated_manual_control_node.py
+│  ├─ integrated_emergency_stop_node.py
+│  ├─ go_home_test_node.py
+│  ├─ press_plate_pickup_node.py
+│  ├─ press_plate_putdown_node.py
+│  ├─ shovel_pickup_node.py
+│  ├─ shovel_putdown_node.py
+│  ├─ tray_soil_service_common.py
+│  ├─ plant_pick_and_place_common.py
+│  ├─ motion_primitives.py
+│  ├─ robot_motion_data.py
+│  ├─ node_common.py
+│  └─ standalone_tests/
+├─ package.xml
+├─ setup.cfg
+├─ setup.py
+└─ README.md
+```
+
+## Dashboard 구조
+
+Dashboard 관련 코드는 `robot_tests/integrated/`에 있습니다.
+
+| 파일 | 역할 |
+|---|---|
+| `main.py` | PyQt application entry point |
+| `dashboard_app.py` | UI 이벤트 처리, 버튼 연결, ROS 노드 실행 제어 |
+| `dashboard_logic.py` | Tray 상태, 작업 단계, persistent state 관리 |
+| `ros_runner.py` | `ros2 run robot_tests ...` 프로세스 실행 wrapper |
+| `config.py` | Dashboard 상태명, 노드명, 경로 설정 |
+| `smartfarm_dashboard.ui` | PyQt UI 파일 |
+
+## 주요 ROS 실행 이름
+
+### 통합 Dashboard 흐름
+
+| 실행 이름 | 역할 |
+|---|---|
+| `integrated_dashboard` | PyQt Dashboard 실행 |
+| `integrated_tray_soil_state_check_node` | 선택 Tray 접촉 측정 및 토양 상태 판정 |
+| `integrated_tray_next_step_node` | Dashboard 상태 기반 다음 작업 실행 |
+| `integrated_tray_soil_flatten_node` | 선택 Tray 평탄화 |
+| `integrated_plant_pick_and_place_node` | 식물 pickup/place |
+| `integrated_manual_control_node` | Base/Joint 수동 제어 및 현재 좌표 읽기 |
+| `integrated_emergency_stop_node` | 긴급정지 명령 |
+
+### 공구 / 복구
+
+| 실행 이름 | 역할 |
+|---|---|
+| `go_home_test` | HOME 복귀 |
+| `press_plate_pickup_node` | 누름판 집기 |
+| `press_plate_putdown_node` | 누름판 놓기 |
+| `shovel_pickup_node` | 삽 집기 |
+| `shovel_putdown_node` | 삽 놓기 |
+
+### 단독 테스트 / 디버깅
+
+| 실행 이름 | 역할 |
+|---|---|
+| `keyboard_teleop_node` | 키보드 기반 수동 이동 |
+| `plant_pick_and_place_tray_select_node` | 대화식 Tray/식물 선택형 식재 테스트 |
+| `tray_soil_state_check_node` | 대화식 토양 상태 측정 |
+| `tray_soil_add_node` | 단독 흙추가 테스트 |
+| `tray_soil_remove_node` | 단독 흙제거 테스트 |
+| `tray_rock_remove_node` | 단독 돌제거 테스트 |
+| `tray_soil_flatten_node` | 단독 평탄화 테스트 |
+| `simple_compliance_down_up_test` | 순응제어 하강/상승 단독 테스트 |
+
+## 핵심 작업 흐름
+
+```text
+Dashboard 실행
+ ↓
+ROS 연결 확인
+ ↓
+Tray 선택
+ ↓
+토양 상태 측정
+ ↓
+토양 상태 판정
+ ↓
+상태별 작업 실행
+ ↓
+평탄화 / 재측정
+ ↓
+정상 판정
+ ↓
+식물 심기
+ ↓
+작업 완료
+```
+
+상태별 분기:
+
+```text
+토양 상태 판정
+ ├─ 정상 → 식물 심기 → DONE
+ ├─ 흙부족 → 흙추가 → 평탄화 → 재측정
+ ├─ 흙많음 → 흙제거 → 평탄화 → 재측정
+ ├─ 장애물감지 → 돌제거 → 평탄화 → 재측정
+ └─ 측정실패 → UI 에러 표시 → 재측정 / HOME / 초기화
+```
+
+## Tray 상태 관리
+
+Dashboard는 Tray별 상태를 관리합니다.
+
+| 값 | 의미 |
+|---|---|
+| `soil_status` | 토양 상태 |
+| `work_phase` | 작업 단계 |
+| `last_error` | 마지막 오류 |
+| `last_measurement` | 마지막 측정 결과 |
+
+작업 단계:
+
+| 상태 | 의미 |
+|---|---|
+| `IDLE` | 일반 대기 |
+| `AFTER_CORRECTION` | 보정 후 평탄화 필요 |
+| `DONE` | 식물 심기 완료 |
+
+## 토양 상태 판정
+
+측정 결과는 다음 상태 중 하나로 분류됩니다.
+
+| 상태 | 다음 작업 |
+|---|---|
+| `미측정` | 토양 측정 |
+| `정상` | 식물 심기 |
+| `흙부족` | 흙추가 |
+| `흙많음` | 흙제거 |
+| `장애물감지` | 돌제거 |
+| `측정실패` | 재측정 / 복구 |
+
+현재 구현은 `TRAY_CORNERS_XYZ`에 정의된 corner 기반 측정 구조를 사용합니다. 접촉 시점의 z값, 평균, 평균 대비 편차를 기반으로 판정합니다.
+
+## 공구 상태
+
+Dashboard는 현재 로봇이 어떤 공구를 들고 있는지 추적합니다.
+
+| 상태 | 의미 |
+|---|---|
+| `NONE` | 공구 없음 |
+| `PRESS_PLATE_HELD` | 누름판 보유 |
+| `SHOVEL_HELD` | 삽 보유 |
+| `UNKNOWN` | 상태 불명 |
+
+`UNKNOWN` 상태에서는 자동 작업을 제한하고 복구가 필요합니다.
+
+## 주요 공통 파일
+
+| 파일 | 역할 |
+|---|---|
+| `robot_motion_data.py` | 좌표, 조인트, Tool/TCP, 판정 기준값 관리 |
+| `motion_primitives.py` | 공통 이동 및 그리퍼 동작 |
+| `node_common.py` | Doosan API 설정 및 공통 노드 설정 |
+| `tray_soil_service_common.py` | 흙추가/흙제거/돌제거/평탄화 공통 로직 |
+| `plant_pick_and_place_common.py` | 식물 pickup/place 공통 시퀀스 |
+| `compliance_common.py` | 순응제어 보조 함수 |
+| `dsr_runtime.py` | `DR_init`, `DSR_ROBOT2` import bootstrap |
 
 ## 실행 예시
 
@@ -114,49 +251,40 @@ Doosan M0609 기반 테스트용 ROS 2 Python 패키지입니다.
 
 ```bash
 ros2 run robot_tests go_home_test
-ros2 run robot_tests keyboard_teleop_node
 ros2 run robot_tests press_plate_pickup_node
 ros2 run robot_tests press_plate_putdown_node
-ros2 run robot_tests plant_pick_and_place_tray_select_node
-ros2 run robot_tests abcd_tray_soil_drop_test_node
-ros2 run robot_tests tray_soil_add_node
-ros2 run robot_tests tray_soil_keep_node
-ros2 run robot_tests tray_soil_remove_node
-ros2 run robot_tests tray_rock_remove_node
-ros2 run robot_tests tray_top_move_node
-ros2 run robot_tests tray_soil_state_check_node
-ros2 run robot_tests simple_compliance_down_up_test
+ros2 run robot_tests shovel_pickup_node
+ros2 run robot_tests shovel_putdown_node
+ros2 run robot_tests integrated_tray_soil_state_check_node -- --tray A
+ros2 run robot_tests integrated_tray_soil_flatten_node -- --tray A
+ros2 run robot_tests integrated_plant_pick_and_place_node -- --tray A --plant 1
 ```
 
-키보드 텔레옵 파라미터 예시:
+수동 제어 서버는 Dashboard에서 자동 실행됩니다.
 
 ```bash
-ros2 run robot_tests keyboard_teleop_node --ros-args -p step_mm:=10.0 -p velocity:=30.0 -p acceleration:=30.0
+ros2 run robot_tests integrated_manual_control_node -- --mode server
 ```
 
-## 최근 반영 사항
+## 테스트 / 검증 항목
 
-- `tray_a` 식물 1~4의 `pre_pick/pick` 조인트 재티칭값 반영
-- `press_plate_pickup_node` 하강 직전 `1000` 중간 벌리기 적용
-- `press_plate_putdown_node` release 후 `1000` 중간 벌리기 적용
-- `tray_top_move_node` 신규 추가
-- `plant_pick_and_place_tray_node` 제거, 선택형 `plant_pick_and_place_tray_select_node`만 유지
-- `a/b/c/d_tray_soil_drop_test_node` 제거, `abcd_tray_soil_drop_test_node`로 통합
-- `abcd_tray_soil_drop_test_node` 종료 시 그리퍼 유지 홈 복귀 추가
-- `doosan_api` 계열 중복 파일 제거
-- 좌표/조인트/Tool/TCP/판정 기준값을 `robot_motion_data.py` 로 통합
-- 공통 동작을 `motion_primitives.py`, `node_common.py`, `compliance_common.py` 로 분리
-- `plant_pick_and_place_tray_select_node` 에서 목표 트레이/식물 번호를 대화식 입력으로 선택 가능
-- soil 대응 테스트 노드 `tray_soil_add_node`, `tray_soil_keep_node`, `tray_soil_remove_node`, `tray_rock_remove_node` 추가
+- Dashboard launch 실행 확인
+- ROS 연결 상태 표시 확인
+- HOME 이동 확인
+- 누름판 집기/놓기 확인
+- 삽 집기/놓기 확인
+- Tray별 토양 측정 확인
+- 흙부족 → 흙추가 → 평탄화 → 재측정 확인
+- 흙많음 → 흙제거 → 평탄화 → 재측정 확인
+- 장애물감지 → 돌제거 → 평탄화 → 재측정 확인
+- 정상 → 식물 심기 확인
+- 긴급정지 / HOME 복귀 확인
+- 작업 로그 출력 확인
 
 ## 주의 사항
 
-- 현재 노드들은 실제 장비에서 경로 검증이 필요합니다.
-- `TARGET_TRAY_PLACE_JOINTS`의 `top/down`은 현장 재티칭 기준으로 저장되어 있으므로 실기 동작 확인이 필요합니다.
-- `plant_pick_and_place_tray_select_node` 는 현재 종료 시 자동 `go_home()` 보장이 아직 없습니다.
-- soil 대응 노드의 shovel pickup/흙상자/폐기상자 좌표는 현재 placeholder 이므로 실기 투입 전 재티칭이 필요합니다.
-- soil 대응 노드의 shovel dump/scoop 시퀀스는 비비탄용 기본 skeleton 이며, 실제 삽 형상에 맞는 세부 경로 조정이 필요합니다.
-- `tray_soil_add_node` 는 soil 상태 검사 후 corner 기반 보정 동작이고, `abcd_tray_soil_drop_test_node` 는 tray별 조인트 드롭 테스트 노드라 역할이 다릅니다.
-- press plate pickup/putdown 은 좌표는 공통화됐지만 시퀀스 자체는 아직 각 노드에 따로 있습니다.
-- tray soil 판정 로직은 아직 `tray_soil_state_check_node.py` 내부에 함께 들어 있습니다.
-- 이 README는 업로드용 진행 현황 요약이며, 세부 인수인계 메모는 `CODEX_HANDOFF.md`에 있습니다.
+- 실제 로봇에서 실행하기 전 좌표, Tool/TCP, 조인트값을 현장 환경에 맞게 확인해야 합니다.
+- `robot_motion_data.py`의 좌표와 판정 기준값은 실기 재티칭 및 threshold 튜닝 대상입니다.
+- Dashboard 내부 `WORKSPACE_SETUP_PATH`가 실제 workspace 설치 경로와 맞아야 합니다.
+- 물리적 E-Stop 상태를 Dashboard에 직접 반영하는 기능은 추가 개선 대상입니다.
+- 영상, 발표자료, PDF 등 대용량 산출물은 Git 저장소가 아니라 별도 문서/Notion에 첨부하는 것을 권장합니다.
